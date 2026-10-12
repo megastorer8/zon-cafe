@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ZON | Smart Micro-Landing</title>
+    <!-- خطوط عربية فخمة وأيقونات -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --gold: #f1c40f;
+            --gold-glow: rgba(241, 196, 15, 0.3);
+            --text-main: #ffffff;
+            --text-muted: #888888;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, var(--bg-dark) 70%);
+        }
+
+        /* رأس الصفحة */
+        .top-contact {
+            width: 100%;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 0.95rem;
+            color: var(--gold);
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .profile-pic {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 3px solid var(--gold);
+            box-shadow: 0 0 20px var(--gold-glow);
+            object-fit: cover;
+            margin-bottom: 25px;
+        }
+
+        /* شبكة الأيقونات 3x3 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 90%;
+            max-width: 400px;
+            margin-bottom: 40px;
+        }
+
+        .grid-item {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .grid-item i {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            transition: color 0.3s ease;
+        }
+
+        .grid-item span {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* تأثيرات الألوان لكل أيقونة عند الضغط/الهوفر */
+        .grid-item:active { transform: scale(0.95); }
+        .grid-item.fb:hover i { color: #1877f2; }
+        .grid-item.insta:hover i { color: #e1306c; }
+        .grid-item.tiktok:hover i { color: #ff0050; }
+        .grid-item.wa:hover i { color: #25d366; }
+        .grid-item.location:hover i { color: #ea4335; }
+        .grid-item.review:hover { border-color: var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
+        .grid-item.review i { color: var(--gold); }
+        .grid-item.menu:hover i { color: #ff9800; }
+        .grid-item.vcash:hover i { color: #e60000; }
+        .grid-item.instapay:hover i { color: #8e44ad; }
+
+        /* رسالة الترحيب */
+        .welcome-text {
+            text-align: center;
+            width: 80%;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .welcome-text strong {
+            color: var(--gold);
+            font-weight: 800;
+        }
+
+        /* النوافذ المنبثقة (Bottom Sheets) الاحترافية */
+        .sheet-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .bottom-sheet {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            background: #151515;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            padding: 30px 20px;
+            z-index: 100;
+            transition: bottom 0.4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.5);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .sheet-overlay.active { opacity: 1; visibility: visible; }
+        .bottom-sheet.active { bottom: 0; }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px; left: 20px;
+            background: none; border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .sheet-title {
+            text-align: center;
+            color: var(--gold);
+            margin-bottom: 25px;
+            font-size: 1.3rem;
+        }
+
+        /* تنسيقات داخل النوافذ */
+        .menu-category { margin-bottom: 25px; }
+        .menu-category h4 { color: var(--gold); border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px; }
+        .menu-list { list-style: none; }
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #222;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        .menu-item .details h5 { margin-bottom: 5px; font-size: 1rem; color: white;}
+        .menu-item .price { color: var(--gold); font-weight: bold; font-size: 0.9rem;}
+        .menu-item select { background: #333; color: white; border: none; padding: 5px; border-radius: 5px; margin-top: 5px; font-family: inherit;}
+        
+        .quantity-control { display: flex; align-items: center; gap: 10px; }
+        .quantity-control button {
+            width: 30px; height: 30px;
+            border-radius: 5px; border: none;
+            background: #444; color: white;
+            font-size: 1.2rem; cursor: pointer;
+        }
+        .quantity-control input {
+            width: 30px; text-align: center;
+            background: transparent; border: none; color: white;
+            font-weight: bold; font-size: 1.1rem;
+        }
+
+        .primary-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: var(--gold);
+            color: black;
+            text-align: center;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .primary-btn:hover { background: #d4af37; }
+
+        .payment-box {
+            background: #222; padding: 20px;
+            border-radius: 12px; text-align: center; margin-bottom: 15px;
+        }
+        .payment-box h4 { color: white; margin-bottom: 10px; }
+        .payment-box img { max-width: 150px; border-radius: 10px; margin-top: 10px; }
+
+        /* عجلة الحظ الاحترافية بالكانفاس */
+        .wheel-wrapper {
+            position: relative;
+            width: 280px; height: 280px;
+            margin: 0 auto 20px;
+        }
+        #wheelCanvas {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 4px solid var(--gold);
+            box-shadow: 0 0 20px var(--gold-glow);
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+        .wheel-pointer {
+            position: absolute;
+            top: -15px; left: 50%;
+            transform: translateX(-50%);
+            width: 30px; height: 40px;
+            background-color: var(--text-main);
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            z-index: 10;
+        }
+        
+        .file-upload-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+            margin-top: 15px;
+        }
+        .file-upload-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer;
+        }
+        .file-upload-btn {
+            background: #333; color: white; padding: 15px;
+            border-radius: 12px; text-align: center; width: 100%;
+            border: 1px dashed var(--gold);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 1. رقم التواصل -->
+    <div class="top-contact">
+        <i class="fa-solid fa-phone"></i> 01094867313
+    </div>
+
+    <!-- 2. لوجو المكان (تم حذفه من الكود بناء على طلبك السابق وتقدر تضيفه) -->
+    <img src="https://via.placeholder.com/150/0a0a0a/f1c40f?text=ZON" alt="Logo" class="profile-pic">
+
+    <!-- 3. شبكة الأيقونات (3 صفوف × 3 أعمدة = 9 أيقونات) -->
+    <div class="grid-container">
+        <!-- الصف الأول: سوشيال ميديا -->
+        <a href="https://www.facebook.com/" target="_blank" class="grid-item fb">
+            <i class="fa-brands fa-facebook-f"></i><span>فيسبوك</span>
+        </a>
+        <a href="https://www.instagram.com/" target="_blank" class="grid-item insta">
+            <i class="fa-brands fa-instagram"></i><span>إنستجرام</span>
+        </a>
+        <a href="https://www.tiktok.com/ar/" target="_blank" class="grid-item tiktok">
+            <i class="fa-brands fa-tiktok"></i><span>تيك توك</span>
+        </a>
+
+        <!-- الصف الثاني: سوشيال + موقع + تقييم -->
+        <a href="https://iwtsp.com/201094867313" target="_blank" class="grid-item wa">
+            <i class="fa-brands fa-whatsapp"></i><span>واتساب</span>
+        </a>
+        <a href="https://share.google/y2OnD4YTXH18uizIw" target="_blank" class="grid-item location">
+            <i class="fa-solid fa-map-location-dot"></i><span>الموقع</span>
+        </a>
+        <div class="grid-item review" onclick="openSheet('reviewSheet')">
+            <i class="fa-solid fa-star"></i><span>تقييم للمكان</span>
+        </div>
+
+        <!-- الصف الثالث: منيو + دفع -->
+        <div class="grid-item menu" onclick="openSheet('menuSheet')">
+            <i class="fa-solid fa-utensils"></i><span>المنيو</span>
+        </div>
+        <div class="grid-item vcash" onclick="openSheet('vcashSheet')">
+            <i class="fa-solid fa-wallet"></i><span>فودافون كاش</span>
+        </div>
+        <div class="grid-item instapay" onclick="openSheet('instaSheet')">
+            <i class="fa-solid fa-bolt"></i><span>إنستاباي</span>
+        </div>
+    </div>
+
+    <!-- 4. الجملة الترحيبية -->
+    <div class="welcome-text">
+        أهلاً بك في <strong>ZON</strong>..<br>
+        نتمنى لك وقتاً ممتعاً وتجربة استثنائية تسعدك ☕✨
+    </div>
+
+
+    <!-- ================== النوافذ المنبثقة (Bottom Sheets) ================== -->
+    <div class="sheet-overlay" id="overlay" onclick="closeAllSheets()"></div>
+
+    <!-- شيت التقييم وعجلة الحظ -->
+    <div class="bottom-sheet" id="reviewSheet">
+        <button class="close-btn" onclick="closeAllSheets()"><i class="fa-solid fa-xmark"></i></button>
+        <h3 class="sheet-title">قيّمنا واربح مكافأة! 🎁</h3>
+        
+        <div id="step1">
+            <p style="text-align: center; color: #ccc; margin-bottom: 20px;">
+                رأيك يهمنا! اضغط للتقييم بـ 5 نجوم، ثم ارفع صورة سكرين شوت للتقييم عشان تفعل عجلة الحظ.
+            </p>
+            <a href="https://search.google.com/local/writereview?placeid=ChIJdTTdewDF9RQRvUjsLAAwNRY" target="_blank" class="primary-btn">
+                <i class="fa-brands fa-google"></i> قيّمنا على جوجل الآن
+            </a>
+            
+            <div class="file-upload-wrapper">
+                <div class="file-upload-btn" id="uploadText"><i class="fa-solid fa-camera"></i> ارفع صورة التقييم من هنا</div>
+                <input type="file" id="reviewImg" accept="image/*" onchange="enableSpin()">
+            </div>
+        </div>
+
+        <div id="step2" style="display: none;">
+            <div class="wheel-wrapper">
+                <div class="wheel-pointer"></div>
+                <canvas id="wheelCanvas" width="300" height="300"></canvas>
+            </div>
+            <button class="primary-btn" id="spinBtn" onclick="spinWheel()">لف العجلة واكسب!</button>
+            <div id="prizeResult" style="text-align: center; font-size: 1.3rem; color: var(--gold); margin-top: 15px; display: none;"></div>
+            
+            <div id="claimSection" style="display: none; margin-top: 20px;">
+                <input type="number" id="tableNo" placeholder="رقم ترابيزتك كام؟" style="width: 100%; padding: 12px; border-radius: 8px; border: none; text-align: center; font-size: 1.1rem;">
+                <button class="primary-btn" onclick="sendPrizeToWA()">إرسال الخصم للإدارة <i class="fa-brands fa-whatsapp"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- شيت المنيو -->
+    <div class="bottom-sheet" id="menuSheet">
+        <button class="close-btn" onclick="closeAllSheets()"><i class="fa-solid fa-xmark"></i></button>
+        <h3 class="sheet-title">القائمة الذكية ☕</h3>
+        
+        <!-- 1. القهوة الساخنة -->
+        <div class="menu-category">
+            <h4><i class="fa-solid fa-mug-hot"></i> القهوة الساخنة</h4>
+            <div class="menu-list" id="hotCoffeeList">
+                <!-- سيتم ملؤها بالجافاسكربت -->
+            </div>
+        </div>
+
+        <!-- 2. القهوة الباردة -->
+        <div class="menu-category">
+            <h4><i class="fa-solid fa-glass-water"></i> القهوة الباردة</h4>
+            <div class="menu-list" id="icedCoffeeList">
+                <!-- سيتم ملؤها بالجافاسكربت -->
+            </div>
+        </div>
+        
+        <!-- 3. الفرابيه -->
+         <div class="menu-category">
+            <h4><i class="fa-solid fa-blender"></i> الفرابيه</h4>
+            <div class="menu-list" id="frappeList">
+                <!-- سيتم ملؤها بالجافاسكربت -->
+            </div>
+        </div>
+
+        <!-- 4. المشروبات الساخنة التقليدية -->
+         <div class="menu-category">
+            <h4><i class="fa-solid fa-mug-saucer"></i> مشروبات ساخنة</h4>
+            <div class="menu-list" id="teaList">
+                <!-- سيتم ملؤها بالجافاسكربت -->
+            </div>
+        </div>
+
+        <input type="number" id="menuTableNo" placeholder="رقم الطاولة (الترابيزة)" style="width: 100%; padding: 12px; border-radius: 8px; border: none; text-align: center; font-size: 1.1rem; margin-top: 15px;">
+        <button class="primary-btn" onclick="sendOrderToWA()">إرسال الطلب <i class="fa-brands fa-whatsapp"></i></button>
+    </div>
+
+    <!-- شيت فودافون كاش -->
+    <div class="bottom-sheet" id="vcashSheet">
+        <button class="close-btn" onclick="closeAllSheets()"><i class="fa-solid fa-xmark"></i></button>
+        <h3 class="sheet-title">فودافون كاش 💳</h3>
+        <div class="payment-box">
+            <h4><i class="fa-solid fa-wallet" style="color: #e60000;"></i> امسح الكود للدفع</h4>
+             <img src="images (1).jfif" alt="Vodafone Cash QR" style="max-width: 200px; border-radius: 10px;">
+        </div>
+    </div>
+
+    <!-- شيت إنستاباي -->
+    <div class="bottom-sheet" id="instaSheet">
+        <button class="close-btn" onclick="closeAllSheets()"><i class="fa-solid fa-xmark"></i></button>
+        <h3 class="sheet-title">إنستاباي 💳</h3>
+        <div class="payment-box">
+            <h4><i class="fa-solid fa-bolt" style="color: #8e44ad;"></i> امسح الكود للتحويل</h4>
+            <img src="images.jfif" alt="InstaPay QR" style="max-width: 200px; border-radius: 10px;">
+        </div>
+    </div>
+
+    <!-- السكربتات (JS) -->
+    <script>
+        const managerPhone = "201094867313"; 
+
+        // بيانات المنيو
+        const menuData = {
+            hotCoffee: [
+                { id: 'h1', name: 'إسبريسو', sizes: [{label: 'Single', price: 45}] },
+                { id: 'h2', name: 'إسبريسو دبل', sizes: [{label: 'Double', price: 60}] },
+                { id: 'h3', name: 'أمريكانو', sizes: [{label: 'Regular', price: 55}, {label: 'Large', price: 65}] },
+                { id: 'h4', name: 'قهوة تركي', sizes: [{label: 'عادي', price: 35}, {label: 'دبل', price: 50}] },
+                { id: 'h5', name: 'قهوة فرنساوي', sizes: [{label: 'عادي', price: 45}] },
+                { id: 'h6', name: 'نسكافيه', sizes: [{label: 'عادي', price: 45}] },
+                { id: 'h7', name: 'نسكافيه بالحليب', sizes: [{label: 'عادي', price: 55}] },
+                { id: 'h8', name: 'كابتشينو', sizes: [{label: 'Regular', price: 70}, {label: 'Large', price: 85}] },
+                { id: 'h9', name: 'كافيه لاتيه', sizes: [{label: 'Regular', price: 70}, {label: 'Large', price: 85}] },
+                { id: 'h10', name: 'فلات وايت', sizes: [{label: 'عادي', price: 75}] },
+                { id: 'h11', name: 'موكا', sizes: [{label: 'Regular', price: 80}, {label: 'Large', price: 95}] },
+                { id: 'h12', name: 'وايت موكا', sizes: [{label: 'عادي', price: 85}] },
+                { id: 'h13', name: 'سبانيش لاتيه ساخن', sizes: [{label: 'عادي', price: 85}] },
+                { id: 'h14', name: 'هوت شوكليت', sizes: [{label: 'Regular', price: 70}, {label: 'Large', price: 85}] }
+            ],
+            icedCoffee: [
+                { id: 'c1', name: 'آيس أمريكانو', sizes: [{label: 'Regular', price: 60}, {label: 'Large', price: 70}] },
+                { id: 'c2', name: 'آيس لاتيه', sizes: [{label: 'Regular', price: 75}, {label: 'Large', price: 90}] },
+                { id: 'c3', name: 'آيس كابتشينو', sizes: [{label: 'عادي', price: 80}] },
+                { id: 'c4', name: 'آيس موكا', sizes: [{label: 'Regular', price: 85}, {label: 'Large', price: 100}] },
+                { id: 'c5', name: 'آيس وايت موكا', sizes: [{label: 'عادي', price: 90}] },
+                { id: 'c6', name: 'آيس سبانيش لاتيه', sizes: [{label: 'Regular', price: 90}, {label: 'Large', price: 105}] },
+                { id: 'c7', name: 'آيس كاراميل لاتيه', sizes: [{label: 'عادي', price: 90}] },
+                { id: 'c8', name: 'آيس فانيليا لاتيه', sizes: [{label: 'عادي', price: 85}] },
+                { id: 'c9', name: 'آيس بندق لاتيه', sizes: [{label: 'عادي', price: 90}] }
+            ],
+            frappe: [
+                { id: 'f1', name: 'كوفي فرابيه', sizes: [{label: 'عادي', price: 85}] },
+                { id: 'f2', name: 'موكا فرابيه', sizes: [{label: 'عادي', price: 90}] },
+                { id: 'f3', name: 'كراميل فرابيه', sizes: [{label: 'عادي', price: 90}] },
+                { id: 'f4', name: 'أوريو فرابيه', sizes: [{label: 'عادي', price: 95}] },
+                { id: 'f5', name: 'لوتس فرابيه', sizes: [{label: 'عادي', price: 105}] },
+                { id: 'f6', name: 'شوكولاتة فرابيه', sizes: [{label: 'عادي', price: 90}] }
+            ],
+            tea: [
+                { id: 't1', name: 'شاي عادي', sizes: [{label: 'عادي', price: 25}] },
+                { id: 't2', name: 'شاي فتلة', sizes: [{label: 'عادي', price: 25}] },
+                { id: 't3', name: 'شاي أخضر', sizes: [{label: 'عادي', price: 30}] },
+                { id: 't4', name: 'شاي بالنعناع', sizes: [{label: 'عادي', price: 30}] },
+                { id: 't5', name: 'شاي بالليمون', sizes: [{label: 'عادي', price: 35}] },
+                { id: 't6', name: 'شاي بحليب', sizes: [{label: 'عادي', price: 40}] },
+                { id: 't7', name: 'ينسون', sizes: [{label: 'عادي', price: 30}] },
+                { id: 't8', name: 'نعناع', sizes: [{label: 'عادي', price: 30}] },
+                { id: 't9', name: 'قرفة', sizes: [{label: 'عادي', price: 35}] },
+                { id: 't10', name: 'جنزبيل بالليمون', sizes: [{label: 'عادي', price: 40}] },
+                { id: 't11', name: 'هوت سيدر', sizes: [{label: 'عادي', price: 55}] },
+                { id: 't12', name: 'سحلب سادة', sizes: [{label: 'عادي', price: 55}] },
+                { id: 't13', name: 'سحلب بالمكسرات', sizes: [{label: 'عادي', price: 70}] }
+            ]
+        };
+
+        // دالة لإنشاء عناصر المنيو
+        function renderMenuCategory(dataArray, containerId) {
+            const container = document.getElementById(containerId);
+            let html = '';
+            
+            dataArray.forEach(item => {
+                let sizeOptions = '';
+                let defaultPrice = item.sizes[0].price;
+                
+                if(item.sizes.length > 1) {
+                    sizeOptions = `<select id="size_${item.id}">`;
+                    item.sizes.forEach(size => {
+                        sizeOptions += `<option value="${size.price}" data-label="${size.label}">${size.label} - ${size.price} ج</option>`;
+                    });
+                    sizeOptions += `</select>`;
+                } else {
+                    sizeOptions = `<span class="price" id="price_${item.id}">${defaultPrice} ج.م</span>`;
+                }
+
+                html += `
+                <div class="menu-item" data-id="${item.id}" data-name="${item.name}">
+                    <div class="details">
+                        <h5>${item.name}</h5>
+                        ${sizeOptions}
+                    </div>
+                    <div class="quantity-control">
+                        <button onclick="updateQty('qty_${item.id}', -1)">-</button>
+                        <input type="text" id="qty_${item.id}" value="0" readonly>
+                        <button onclick="updateQty('qty_${item.id}', 1)">+</button>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // تشغيل الريندر عند فتح الصفحة
+        renderMenuCategory(menuData.hotCoffee, 'hotCoffeeList');
+        renderMenuCategory(menuData.icedCoffee, 'icedCoffeeList');
+        renderMenuCategory(menuData.frappe, 'frappeList');
+        renderMenuCategory(menuData.tea, 'teaList');
+
+
+        // التحكم في النوافذ المنبثقة
+        function openSheet(id) {
+            document.getElementById('overlay').classList.add('active');
+            document.getElementById(id).classList.add('active');
+            if(id === 'reviewSheet') initWheel(); 
+        }
+        function closeAllSheets() {
+            document.getElementById('overlay').classList.remove('active');
+            document.querySelectorAll('.bottom-sheet').forEach(sheet => sheet.classList.remove('active'));
+        }
+
+        // التحكم في المنيو
+        function updateQty(id, change) {
+            let val = parseInt(document.getElementById(id).value) + change;
+            if (val < 0) val = 0;
+            document.getElementById(id).value = val;
+        }
+
+        function sendOrderToWA() {
+            const table = document.getElementById('menuTableNo').value;
+            if (!table) return alert("برجاء إدخال رقم الترابيزة!");
+            
+            let orderItems = [];
+            let totalCost = 0;
+
+            document.querySelectorAll('.menu-item').forEach(itemEl => {
+                const id = itemEl.getAttribute('data-id');
+                const name = itemEl.getAttribute('data-name');
+                const qty = parseInt(document.getElementById(`qty_${id}`).value);
+                
+                if(qty > 0) {
+                    let price = 0;
+                    let sizeLabel = '';
+                    
+                    const selectEl = document.getElementById(`size_${id}`);
+                    if(selectEl) {
+                        price = parseInt(selectEl.value);
+                        sizeLabel = ` (${selectEl.options[selectEl.selectedIndex].getAttribute('data-label')})`;
+                    } else {
+                        const allData = [...menuData.hotCoffee, ...menuData.icedCoffee, ...menuData.frappe, ...menuData.tea];
+                        const foundItem = allData.find(i => i.id === id);
+                        price = foundItem.sizes[0].price;
+                    }
+                    
+                    const itemTotal = qty * price;
+                    totalCost += itemTotal;
+                    orderItems.push(`${qty}x ${name}${sizeLabel} [${itemTotal} ج]`);
+                }
+            });
+
+            if (orderItems.length === 0) return alert("اختر طلب أولاً!");
+
+            const msg = `*طلب جديد | طاولة ${table}*\n\n` + orderItems.join('\n') + `\n\n*الإجمالي التقريبي: ${totalCost} ج.م*`;
+            window.open(`https://wa.me/${managerPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+            closeAllSheets();
+        }
+
+        // --- نظام عجلة الحظ الاحترافي (Canvas) ---
+        const canvas = document.getElementById("wheelCanvas");
+        const ctx = canvas.getContext("2d");
+        const prizes = ["خصم 10%", "قهوة مجاني", "حلو اليوم", "واي فاي VIP", "خصم 20%", "مشروب إضافي"];
+        const colors = ["#111111", "#222222", "#f1c40f", "#111111", "#222222", "#f1c40f"];
+        const textColors = ["#f1c40f", "#f1c40f", "#000000", "#f1c40f", "#f1c40f", "#000000"];
+        let finalPrize = "";
+
+        function initWheel() {
+            const arc = Math.PI / (prizes.length / 2);
+            ctx.clearRect(0, 0, 300, 300);
+            for(let i = 0; i < prizes.length; i++) {
+                const angle = i * arc;
+                ctx.beginPath();
+                ctx.fillStyle = colors[i];
+                ctx.moveTo(150, 150);
+                ctx.arc(150, 150, 150, angle, angle + arc, false);
+                ctx.fill();
+                
+                ctx.save();
+                ctx.translate(150, 150);
+                ctx.rotate(angle + arc / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = textColors[i];
+                ctx.font = "bold 20px Cairo";
+                ctx.fillText(prizes[i], 130, 6);
+                ctx.restore();
+            }
+        }
+
+        function enableSpin() {
+            document.getElementById('uploadText').innerHTML = '<i class="fa-solid fa-check" style="color:var(--gold)"></i> تم رفع الصورة بنجاح';
+            setTimeout(() => {
+                document.getElementById('step1').style.display = 'none';
+                document.getElementById('step2').style.display = 'block';
+            }, 800);
+        }
+
+        function spinWheel() {
+            const btn = document.getElementById('spinBtn');
+            btn.disabled = true;
+            
+            const randomDegree = Math.floor(Math.random() * 360) + (360 * 6);
+            canvas.style.transform = `rotate(${randomDegree}deg)`;
+
+            setTimeout(() => {
+                const actualDegree = randomDegree % 360;
+                let slice = 360 / prizes.length;
+                let prizeIndex = Math.floor((360 - actualDegree + (slice/2)) % 360 / slice);
+                
+                finalPrize = prizes[prizeIndex];
+                
+                const res = document.getElementById('prizeResult');
+                res.innerHTML = `🎉 مبروك! كسبت: <b>${finalPrize}</b>`;
+                res.style.display = 'block';
+                document.getElementById('claimSection').style.display = 'block';
+            }, 4000);
+        }
+
+        function sendPrizeToWA() {
+            const t = document.getElementById('tableNo').value;
+            if(!t) return alert("اكتب رقم ترابيزتك الأول!");
+            const msg = `*فائز جديد بالتقييم!*\nطاولة رقم: ${t}\nالجائزة: ${finalPrize}`;
+            window.open(`https://wa.me/${managerPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
