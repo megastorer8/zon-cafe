@@ -5,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ZON | Smart Micro-Landing</title>
     <!-- خطوط عربية فخمة وأيقونات -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-dark: #0a0a0a;
-            --card-bg: rgba(255, 255, 255, 0.05);
+            --bg-dark: #070707;
             --gold: #f1c40f;
-            --gold-glow: rgba(241, 196, 15, 0.3);
+            --gold-dark: #b8860b;
+            --gold-glow: rgba(241, 196, 15, 0.4);
             --text-main: #ffffff;
             --text-muted: #888888;
+            --danger: #e74c3c;
+            --success: #2ecc71;
         }
 
         * {
@@ -33,290 +35,242 @@
             flex-direction: column;
             align-items: center;
             overflow-x: hidden;
-            background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, var(--bg-dark) 70%);
+            position: relative;
         }
 
-        /* رأس الصفحة */
-        .top-contact {
-            width: 100%;
-            text-align: center;
-            padding: 15px 0;
-            font-size: 0.95rem;
-            color: var(--gold);
-            letter-spacing: 1px;
-            font-weight: 600;
+        /* تأثير النغمشة السينمائية */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            z-index: -1;
+            pointer-events: none;
         }
 
-        .profile-pic {
-            width: 110px;
-            height: 110px;
+        /* الإضاءات الذهبية المتحركة */
+        .bg-orbs {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2;
+            overflow: hidden;
+        }
+        .orb {
+            position: absolute;
             border-radius: 50%;
-            border: 3px solid var(--gold);
-            box-shadow: 0 0 20px var(--gold-glow);
-            object-fit: cover;
-            margin-bottom: 25px;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+        .orb-1 { width: 350px; height: 350px; background: rgba(241, 196, 15, 0.12); top: -100px; right: -100px; }
+        .orb-2 { width: 300px; height: 300px; background: rgba(184, 134, 11, 0.15); bottom: -50px; left: -100px; animation-delay: -5s; animation-duration: 25s; }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-30px, 50px) scale(1.1); }
         }
 
-        /* شبكة الأيقونات 3x3 */
+        /* الوقت والتاريخ */
+        .datetime-display { position: absolute; top: 20px; right: 20px; text-align: right; z-index: 10; }
+        .datetime-display .time { color: var(--gold); font-size: 1rem; font-weight: 900; direction: ltr; text-shadow: 0 0 10px rgba(241,196,15,0.3); }
+        .datetime-display .date { color: var(--text-muted); font-size: 0.75rem; margin-top: 2px; }
+
+        .top-contact { width: 100%; text-align: center; padding: 20px 0; font-size: 0.95rem; color: var(--gold); letter-spacing: 1px; font-weight: 600; margin-top: 40px; }
+        .profile-pic { width: 110px; height: 110px; border-radius: 50%; border: 2px solid rgba(241, 196, 15, 0.5); box-shadow: 0 0 25px rgba(241, 196, 15, 0.2); object-fit: cover; margin-bottom: 25px; position: relative; z-index: 2; }
+
+        /* شبكة الأيقونات */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            width: 90%;
-            max-width: 400px;
+            gap: 15px;
+            width: 92%;
+            max-width: 420px;
             margin-bottom: 40px;
+            z-index: 2;
         }
 
         .grid-item {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 18px;
-            aspect-ratio: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: var(--text-main);
-            transition: all 0.3s ease;
-            cursor: pointer;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 18px; aspect-ratio: 1;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-decoration: none; color: var(--text-main); transition: all 0.3s ease; cursor: pointer;
+            box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.3);
         }
-
-        .grid-item i {
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-            color: var(--text-main);
-            transition: color 0.3s ease;
-        }
-
-        .grid-item span {
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        /* تأثيرات الألوان لكل أيقونة عند الضغط/الهوفر */
+        .grid-item i { font-size: 1.8rem; margin-bottom: 8px; color: var(--text-main); transition: color 0.3s ease; }
+        .grid-item span { font-size: 0.75rem; font-weight: 600; text-align: center; line-height: 1.2; }
+        
         .grid-item:active { transform: scale(0.95); }
         .grid-item.fb:hover i { color: #1877f2; }
         .grid-item.insta:hover i { color: #e1306c; }
         .grid-item.tiktok:hover i { color: #ff0050; }
         .grid-item.wa:hover i { color: #25d366; }
+        .grid-item.wifi:hover i { color: #3498db; }
         .grid-item.location:hover i { color: #ea4335; }
-        .grid-item.review:hover { border-color: var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
-        .grid-item.review i { color: var(--gold); }
         .grid-item.menu:hover i { color: #ff9800; }
         .grid-item.vcash:hover i { color: #e60000; }
         .grid-item.instapay:hover i { color: #8e44ad; }
 
-        /* رسالة الترحيب */
-        .welcome-text {
-            text-align: center;
-            width: 80%;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin-bottom: 30px;
+        /* زر التقييم المميز */
+        .grid-item.review {
+            grid-column: 1 / -1; /* يأخذ العرض بالكامل */
+            aspect-ratio: auto;
+            flex-direction: row;
+            justify-content: center;
+            gap: 20px;
+            padding: 22px;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.15) 0%, rgba(184, 134, 11, 0.05) 100%);
+            border: 1px solid rgba(241, 196, 15, 0.5);
+            box-shadow: 0 0 25px rgba(241, 196, 15, 0.2);
+            border-radius: 22px;
         }
-        .welcome-text strong {
+        .grid-item.review i {
             color: var(--gold);
-            font-weight: 800;
+            font-size: 3rem;
+            margin-bottom: 0;
+            animation: pulse-star 2s infinite alternate;
+        }
+        .grid-item.review .text-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .grid-item.review .title { font-size: 1.3rem; font-weight: 900; color: var(--gold); }
+        .grid-item.review .subtitle { font-size: 0.9rem; color: #e0e0e0; font-weight: 600; margin-top: 3px; }
+        
+        @keyframes pulse-star {
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px var(--gold)); }
+            100% { transform: scale(1.15); filter: drop-shadow(0 0 15px var(--gold)); }
         }
 
-        /* النوافذ المنبثقة (Bottom Sheets) الاحترافية */
-        .sheet-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
-            z-index: 99;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
+        .welcome-text { text-align: center; width: 80%; color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px; z-index: 2; }
+        .welcome-text strong { color: var(--gold); font-weight: 800; }
+
+        /* النوافذ المنبثقة */
+        .sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 99; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         .bottom-sheet {
-            position: fixed;
-            bottom: -100%;
-            left: 0;
-            width: 100%;
-            background: #151515;
-            border-top-left-radius: 30px;
-            border-top-right-radius: 30px;
-            padding: 30px 20px;
-            z-index: 100;
-            transition: bottom 0.4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-            box-shadow: 0 -5px 25px rgba(0,0,0,0.5);
-            max-height: 90vh;
-            overflow-y: auto;
+            position: fixed; bottom: -100%; left: 0; width: 100%; background: #111111;
+            border-top: 1px solid rgba(241, 196, 15, 0.2); border-top-left-radius: 35px; border-top-right-radius: 35px;
+            padding: 30px 20px; z-index: 100; transition: bottom 0.4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto;
         }
         .sheet-overlay.active { opacity: 1; visibility: visible; }
         .bottom-sheet.active { bottom: 0; }
         
-        .close-btn {
-            position: absolute;
-            top: 15px; left: 20px;
-            background: none; border: none;
-            color: var(--text-muted);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        .sheet-title {
-            text-align: center;
-            color: var(--gold);
-            margin-bottom: 25px;
-            font-size: 1.3rem;
-        }
+        .close-btn { position: absolute; top: 15px; left: 20px; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+        .sheet-title { text-align: center; color: var(--gold); margin-bottom: 25px; font-size: 1.3rem; }
 
-        /* تنسيقات داخل النوافذ */
+        /* تنسيقات المنيو */
         .menu-category { margin-bottom: 25px; }
-        .menu-category h4 { color: var(--gold); border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px; }
+        .menu-category h4 { color: var(--gold); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 15px; }
         .menu-list { list-style: none; }
         .menu-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: #222;
-            border-radius: 12px;
-            margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center; padding: 15px;
+            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 10px;
         }
         .menu-item .details h5 { margin-bottom: 5px; font-size: 1rem; color: white;}
         .menu-item .price { color: var(--gold); font-weight: bold; font-size: 0.9rem;}
-        .menu-item select { background: #333; color: white; border: none; padding: 5px; border-radius: 5px; margin-top: 5px; font-family: inherit;}
+        .menu-item select { background: #222; color: white; border: 1px solid #444; padding: 5px; border-radius: 5px; margin-top: 5px; font-family: inherit;}
         
         .quantity-control { display: flex; align-items: center; gap: 10px; }
-        .quantity-control button {
-            width: 30px; height: 30px;
-            border-radius: 5px; border: none;
-            background: #444; color: white;
-            font-size: 1.2rem; cursor: pointer;
-        }
-        .quantity-control input {
-            width: 30px; text-align: center;
-            background: transparent; border: none; color: white;
-            font-weight: bold; font-size: 1.1rem;
-        }
+        .quantity-control button { width: 30px; height: 30px; border-radius: 5px; border: none; background: #333; color: white; font-size: 1.2rem; cursor: pointer; }
+        .quantity-control input { width: 30px; text-align: center; background: transparent; border: none; color: white; font-weight: bold; font-size: 1.1rem; }
 
         .primary-btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background: var(--gold);
-            color: black;
-            text-align: center;
-            border: none;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-top: 20px;
-            cursor: pointer;
-            text-decoration: none;
+            display: block; width: 100%; padding: 15px; background: linear-gradient(135deg, #f1c40f 0%, #b8860b 100%);
+            color: black; text-align: center; border: none; border-radius: 12px; font-weight: bold; font-size: 1.1rem;
+            margin-top: 20px; cursor: pointer; text-decoration: none; transition: 0.3s; box-shadow: 0 4px 15px rgba(241,196,15,0.3);
         }
-        .primary-btn:hover { background: #d4af37; }
+        .primary-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .primary-btn.disabled, .primary-btn:disabled { background: #333; color: #666; cursor: not-allowed; opacity: 0.7; transform: none; box-shadow: none; }
 
-        .payment-box {
-            background: #222; padding: 20px;
-            border-radius: 12px; text-align: center; margin-bottom: 15px;
-        }
+        .payment-box { background: rgba(255,255,255,0.02); padding: 20px; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; text-align: center; margin-bottom: 15px; }
         .payment-box h4 { color: white; margin-bottom: 10px; }
-        .payment-box img { max-width: 150px; border-radius: 10px; margin-top: 10px; }
+        .payment-box img { max-width: 150px; border-radius: 10px; margin-top: 10px; border: 2px solid rgba(255,255,255,0.1); }
 
-        /* عجلة الحظ الاحترافية بالكانفاس */
-        .wheel-wrapper {
-            position: relative;
-            width: 280px; height: 280px;
-            margin: 0 auto 20px;
-        }
-        #wheelCanvas {
-            width: 100%; height: 100%;
-            border-radius: 50%;
-            border: 4px solid var(--gold);
-            box-shadow: 0 0 20px var(--gold-glow);
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-        }
-        .wheel-pointer {
-            position: absolute;
-            top: -15px; left: 50%;
-            transform: translateX(-50%);
-            width: 30px; height: 40px;
-            background-color: var(--text-main);
-            clip-path: polygon(50% 100%, 0 0, 100% 0);
-            z-index: 10;
-        }
+        /* عجلة الحظ */
+        .wheel-wrapper { position: relative; width: 280px; height: 280px; margin: 0 auto 20px; }
+        #wheelCanvas { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--gold); box-shadow: 0 0 30px rgba(241, 196, 15, 0.3); transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
+        .wheel-pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 34px; height: 44px; background-color: #fff; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; filter: drop-shadow(0px 4px 5px rgba(0,0,0,0.8)); }
         
-        .file-upload-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            width: 100%;
-            margin-top: 15px;
-        }
-        .file-upload-wrapper input[type=file] {
-            font-size: 100px;
-            position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer;
-        }
-        .file-upload-btn {
-            background: #333; color: white; padding: 15px;
-            border-radius: 12px; text-align: center; width: 100%;
-            border: 1px dashed var(--gold);
-        }
+        /* فاحص الذكاء الاصطناعي */
+        .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; margin-top: 15px; }
+        .file-upload-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
+        .file-upload-btn { background: rgba(255,255,255,0.05); color: white; padding: 15px; border-radius: 12px; text-align: center; width: 100%; border: 1px dashed var(--gold); transition: 0.3s; font-weight: bold; }
+        .file-upload-wrapper.locked .file-upload-btn { border-color: #555; color: #888; background: #222; }
+        .file-upload-wrapper.locked input[type=file] { pointer-events: none; }
+        
+        #ai-scanner { display: none; text-align: center; margin-top: 20px; }
+        .scanner-bar { width: 100%; height: 6px; background: #222; border-radius: 10px; overflow: hidden; margin-top: 15px; position: relative; }
+        .scanner-progress { width: 0%; height: 100%; background: var(--gold); transition: width 0.1s linear; box-shadow: 0 0 10px var(--gold); }
+        .scan-text { color: var(--gold); font-size: 0.95rem; font-weight: bold; margin-top: 10px; animation: pulse 1s infinite alternate; }
+        @keyframes pulse { 0% { opacity: 0.6; } 100% { opacity: 1; } }
 
     </style>
 </head>
 <body>
 
-    <!-- 1. رقم التواصل -->
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <!-- الساعة الفعالة المحدثة -->
+    <div class="datetime-display">
+        <div class="time" id="timeDisplay">--:--</div>
+        <div class="date" id="dateDisplay">-- --- ----</div>
+    </div>
+
     <div class="top-contact">
         <i class="fa-solid fa-phone"></i> 01094867313
     </div>
 
-    <!-- 2. لوجو المكان (تم حذفه من الكود بناء على طلبك السابق وتقدر تضيفه) -->
     <img src="https://via.placeholder.com/150/0a0a0a/f1c40f?text=ZON" alt="Logo" class="profile-pic">
 
-    <!-- 3. شبكة الأيقونات (3 صفوف × 3 أعمدة = 9 أيقونات) -->
+    <!-- شبكة الأيقونات -->
     <div class="grid-container">
-        <!-- الصف الأول: سوشيال ميديا -->
-        <a href="https://www.facebook.com/" target="_blank" class="grid-item fb">
-            <i class="fa-brands fa-facebook-f"></i><span>فيسبوك</span>
-        </a>
-        <a href="https://www.instagram.com/" target="_blank" class="grid-item insta">
-            <i class="fa-brands fa-instagram"></i><span>إنستجرام</span>
-        </a>
-        <a href="https://www.tiktok.com/ar/" target="_blank" class="grid-item tiktok">
-            <i class="fa-brands fa-tiktok"></i><span>تيك توك</span>
-        </a>
-
-        <!-- الصف الثاني: سوشيال + موقع + تقييم -->
-        <a href="https://iwtsp.com/201094867313" target="_blank" class="grid-item wa">
-            <i class="fa-brands fa-whatsapp"></i><span>واتساب</span>
-        </a>
-        <a href="https://share.google/y2OnD4YTXH18uizIw" target="_blank" class="grid-item location">
-            <i class="fa-solid fa-map-location-dot"></i><span>الموقع</span>
-        </a>
+        <!-- الصف الأول -->
+        <a href="https://www.facebook.com/" target="_blank" class="grid-item fb"><i class="fa-brands fa-facebook-f"></i><span>فيسبوك</span></a>
+        <a href="https://www.instagram.com/" target="_blank" class="grid-item insta"><i class="fa-brands fa-instagram"></i><span>إنستجرام</span></a>
+        <a href="https://www.tiktok.com/ar/" target="_blank" class="grid-item tiktok"><i class="fa-brands fa-tiktok"></i><span>تيك توك</span></a>
+        
+        <!-- الصف الثاني -->
+        <a href="https://iwtsp.com/201094867313" target="_blank" class="grid-item wa"><i class="fa-brands fa-whatsapp"></i><span>واتساب</span></a>
+        <a href="https://share.google/y2OnD4YTXH18uizIw" target="_blank" class="grid-item location"><i class="fa-solid fa-map-location-dot"></i><span>الموقع</span></a>
+        <div class="grid-item wifi" onclick="openSheet('wifiSheet')"><i class="fa-solid fa-wifi"></i><span>كارت نت</span></div>
+        
+        <!-- التقييم (واخد الشاشة كلها) -->
         <div class="grid-item review" onclick="openSheet('reviewSheet')">
-            <i class="fa-solid fa-star"></i><span>تقييم للمكان</span>
+            <i class="fa-solid fa-star"></i>
+            <div class="text-content">
+                <span class="title">قيّمنا على جوجل</span>
+                <span class="subtitle">واربح هديتك الآن!</span>
+            </div>
         </div>
 
-        <!-- الصف الثالث: منيو + دفع -->
-        <div class="grid-item menu" onclick="openSheet('menuSheet')">
-            <i class="fa-solid fa-utensils"></i><span>المنيو</span>
-        </div>
-        <div class="grid-item vcash" onclick="openSheet('vcashSheet')">
-            <i class="fa-solid fa-wallet"></i><span>فودافون كاش</span>
-        </div>
-        <div class="grid-item instapay" onclick="openSheet('instaSheet')">
-            <i class="fa-solid fa-bolt"></i><span>إنستاباي</span>
-        </div>
+        <!-- الصف الأخير -->
+        <div class="grid-item menu" onclick="openSheet('menuSheet')"><i class="fa-solid fa-utensils"></i><span>المنيو</span></div>
+        <div class="grid-item vcash" onclick="openSheet('vcashSheet')"><i class="fa-solid fa-wallet"></i><span>فودافون كاش</span></div>
+        <div class="grid-item instapay" onclick="openSheet('instaSheet')"><i class="fa-solid fa-bolt"></i><span>إنستاباي</span></div>
     </div>
 
-    <!-- 4. الجملة الترحيبية -->
     <div class="welcome-text">
         أهلاً بك في <strong>ZON</strong>..<br>
         نتمنى لك وقتاً ممتعاً وتجربة استثنائية تسعدك ☕✨
     </div>
 
-
-    <!-- ================== النوافذ المنبثقة (Bottom Sheets) ================== -->
     <div class="sheet-overlay" id="overlay" onclick="closeAllSheets()"></div>
+
+    <!-- شيت كارت الواي فاي -->
+    <div class="bottom-sheet" id="wifiSheet">
+        <button class="close-btn" onclick="closeAllSheets()"><i class="fa-solid fa-xmark"></i></button>
+        <h3 class="sheet-title"><i class="fa-solid fa-wifi"></i> طلب كارت إنترنت</h3>
+        <p style="text-align: center; color: #ccc; margin-bottom: 20px;">احصل على كارت إنترنت سريع بقيمة <strong>5 ج.م</strong> فقط.</p>
+        <input type="number" id="wifiTableNo" placeholder="رقم الطاولة (الترابيزة)؟" style="width: 100%; padding: 12px; border-radius: 8px; border: none; text-align: center; font-size: 1.1rem; background: #222; color: white;">
+        <button class="primary-btn" onclick="requestWifi()">طلب الكارت الآن <i class="fa-brands fa-whatsapp"></i></button>
+    </div>
 
     <!-- شيت التقييم وعجلة الحظ -->
     <div class="bottom-sheet" id="reviewSheet">
@@ -324,16 +278,19 @@
         <h3 class="sheet-title">قيّمنا واربح مكافأة! 🎁</h3>
         
         <div id="step1">
-            <p style="text-align: center; color: #ccc; margin-bottom: 20px;">
-                رأيك يهمنا! اضغط للتقييم بـ 5 نجوم، ثم ارفع صورة سكرين شوت للتقييم عشان تفعل عجلة الحظ.
-            </p>
-            <a href="https://search.google.com/local/writereview?placeid=ChIJdTTdewDF9RQRvUjsLAAwNRY" target="_blank" class="primary-btn">
-                <i class="fa-brands fa-google"></i> قيّمنا على جوجل الآن
-            </a>
+            <p style="text-align: center; color: #ccc; margin-bottom: 15px;">رأيك يهمنا! اضغط للتقييم بـ 5 نجوم أولاً، وسيتم فتح زر رفع الصورة بعد <b id="countdown" style="color:var(--gold)">15</b> ثانية.</p>
+            <a href="https://search.google.com/local/writereview?placeid=ChIJdTTdewDF9RQRvUjsLAAwNRY" target="_blank" class="primary-btn" id="reviewLinkBtn" onclick="startTimer()"><i class="fa-brands fa-google"></i> قيّمنا على جوجل الآن</a>
             
-            <div class="file-upload-wrapper">
-                <div class="file-upload-btn" id="uploadText"><i class="fa-solid fa-camera"></i> ارفع صورة التقييم من هنا</div>
-                <input type="file" id="reviewImg" accept="image/*" onchange="enableSpin()">
+            <div class="file-upload-wrapper locked" id="uploadWrapper">
+                <div class="file-upload-btn" id="uploadText"><i class="fa-solid fa-lock"></i> زر الرفع مغلق مؤقتاً...</div>
+                <input type="file" id="reviewImg" accept="image/*" onchange="verifyImage(this)">
+            </div>
+
+            <!-- فاحص الذكاء الاصطناعي الوهمي -->
+            <div id="ai-scanner">
+                <i class="fa-solid fa-robot" style="font-size: 2.5rem; color: var(--gold);"></i>
+                <div class="scan-text" id="scanMsg">جاري تهيئة محرك الذكاء الاصطناعي...</div>
+                <div class="scanner-bar"><div class="scanner-progress" id="scanProgress"></div></div>
             </div>
         </div>
 
@@ -343,10 +300,9 @@
                 <canvas id="wheelCanvas" width="300" height="300"></canvas>
             </div>
             <button class="primary-btn" id="spinBtn" onclick="spinWheel()">لف العجلة واكسب!</button>
-            <div id="prizeResult" style="text-align: center; font-size: 1.3rem; color: var(--gold); margin-top: 15px; display: none;"></div>
-            
+            <div id="prizeResult" style="text-align: center; font-size: 1.3rem; color: var(--gold); margin-top: 15px; display: none; font-weight: bold;"></div>
             <div id="claimSection" style="display: none; margin-top: 20px;">
-                <input type="number" id="tableNo" placeholder="رقم ترابيزتك كام؟" style="width: 100%; padding: 12px; border-radius: 8px; border: none; text-align: center; font-size: 1.1rem;">
+                <input type="number" id="tableNo" placeholder="رقم ترابيزتك كام؟" style="width: 100%; padding: 12px; border-radius: 8px; border: none; text-align: center; font-size: 1.1rem; background: #222; color: white;">
                 <button class="primary-btn" onclick="sendPrizeToWA()">إرسال الخصم للإدارة <i class="fa-brands fa-whatsapp"></i></button>
             </div>
         </div>
@@ -356,68 +312,122 @@
     <div class="bottom-sheet" id="menuSheet">
         <button class="close-btn" onclick="closeAllSheets()"><i class="fa-solid fa-xmark"></i></button>
         <h3 class="sheet-title">القائمة الذكية ☕</h3>
-        
-        <!-- 1. القهوة الساخنة -->
-        <div class="menu-category">
-            <h4><i class="fa-solid fa-mug-hot"></i> القهوة الساخنة</h4>
-            <div class="menu-list" id="hotCoffeeList">
-                <!-- سيتم ملؤها بالجافاسكربت -->
-            </div>
-        </div>
-
-        <!-- 2. القهوة الباردة -->
-        <div class="menu-category">
-            <h4><i class="fa-solid fa-glass-water"></i> القهوة الباردة</h4>
-            <div class="menu-list" id="icedCoffeeList">
-                <!-- سيتم ملؤها بالجافاسكربت -->
-            </div>
-        </div>
-        
-        <!-- 3. الفرابيه -->
-         <div class="menu-category">
-            <h4><i class="fa-solid fa-blender"></i> الفرابيه</h4>
-            <div class="menu-list" id="frappeList">
-                <!-- سيتم ملؤها بالجافاسكربت -->
-            </div>
-        </div>
-
-        <!-- 4. المشروبات الساخنة التقليدية -->
-         <div class="menu-category">
-            <h4><i class="fa-solid fa-mug-saucer"></i> مشروبات ساخنة</h4>
-            <div class="menu-list" id="teaList">
-                <!-- سيتم ملؤها بالجافاسكربت -->
-            </div>
-        </div>
-
-        <input type="number" id="menuTableNo" placeholder="رقم الطاولة (الترابيزة)" style="width: 100%; padding: 12px; border-radius: 8px; border: none; text-align: center; font-size: 1.1rem; margin-top: 15px;">
+        <div class="menu-category"><h4><i class="fa-solid fa-mug-hot"></i> القهوة الساخنة</h4><div class="menu-list" id="hotCoffeeList"></div></div>
+        <div class="menu-category"><h4><i class="fa-solid fa-glass-water"></i> القهوة الباردة</h4><div class="menu-list" id="icedCoffeeList"></div></div>
+        <div class="menu-category"><h4><i class="fa-solid fa-blender"></i> الفرابيه</h4><div class="menu-list" id="frappeList"></div></div>
+        <div class="menu-category"><h4><i class="fa-solid fa-mug-saucer"></i> مشروبات ساخنة</h4><div class="menu-list" id="teaList"></div></div>
+        <input type="number" id="menuTableNo" placeholder="رقم الطاولة (الترابيزة)" style="width: 100%; padding: 12px; border-radius: 8px; border: none; text-align: center; font-size: 1.1rem; margin-top: 15px; background: #222; color: white;">
         <button class="primary-btn" onclick="sendOrderToWA()">إرسال الطلب <i class="fa-brands fa-whatsapp"></i></button>
     </div>
 
-    <!-- شيت فودافون كاش -->
+    <!-- شيت الدفع -->
     <div class="bottom-sheet" id="vcashSheet">
         <button class="close-btn" onclick="closeAllSheets()"><i class="fa-solid fa-xmark"></i></button>
         <h3 class="sheet-title">فودافون كاش 💳</h3>
-        <div class="payment-box">
-            <h4><i class="fa-solid fa-wallet" style="color: #e60000;"></i> امسح الكود للدفع</h4>
-             <img src="images (1).jfif" alt="Vodafone Cash QR" style="max-width: 200px; border-radius: 10px;">
-        </div>
+        <div class="payment-box"><h4><i class="fa-solid fa-wallet" style="color: #e60000;"></i> امسح الكود للدفع</h4><img src="vcash.jpg" alt="Vodafone Cash QR"></div>
     </div>
-
-    <!-- شيت إنستاباي -->
     <div class="bottom-sheet" id="instaSheet">
         <button class="close-btn" onclick="closeAllSheets()"><i class="fa-solid fa-xmark"></i></button>
         <h3 class="sheet-title">إنستاباي 💳</h3>
-        <div class="payment-box">
-            <h4><i class="fa-solid fa-bolt" style="color: #8e44ad;"></i> امسح الكود للتحويل</h4>
-            <img src="images.jfif" alt="InstaPay QR" style="max-width: 200px; border-radius: 10px;">
-        </div>
+        <div class="payment-box"><h4><i class="fa-solid fa-bolt" style="color: #8e44ad;"></i> امسح الكود للتحويل</h4><img src="instapay.jpg" alt="InstaPay QR"></div>
     </div>
 
-    <!-- السكربتات (JS) -->
     <script>
+        // ملف الجافاسكريبت المصلح بالكامل
         const managerPhone = "201094867313"; 
 
-        // بيانات المنيو
+        function updateDateTime() {
+            const now = new Date();
+            const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+            document.getElementById('timeDisplay').innerText = now.toLocaleTimeString('ar-EG', timeOptions);
+            document.getElementById('dateDisplay').innerText = now.toLocaleDateString('ar-EG', dateOptions);
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime(); 
+
+        function requestWifi() {
+            const t = document.getElementById('wifiTableNo').value;
+            if(!t) return alert("اكتب رقم ترابيزتك الأول!");
+            const msg = `*طلب جديد | كارت إنترنت*\nطاولة رقم: ${t}\nالخدمة: كارت واي فاي (5 ج.م)`;
+            window.open(`https://wa.me/${managerPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+            closeAllSheets();
+        }
+
+        let timerStarted = false;
+        function startTimer() {
+            if(timerStarted) return;
+            timerStarted = true;
+            let timeLeft = 15;
+            const btn = document.getElementById('reviewLinkBtn');
+            const wrapper = document.getElementById('uploadWrapper');
+            const uploadText = document.getElementById('uploadText');
+            const countdownSpan = document.getElementById('countdown');
+            
+            btn.innerHTML = `<i class="fa-brands fa-google"></i> شكراً لتقييمك...`;
+            
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                countdownSpan.innerText = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    wrapper.classList.remove('locked');
+                    uploadText.innerHTML = '<i class="fa-solid fa-camera"></i> ارفع صورة التقييم الآن';
+                    countdownSpan.innerText = "0";
+                }
+            }, 1000);
+        }
+
+        function verifyImage(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            
+            document.getElementById('uploadWrapper').style.display = 'none';
+            document.getElementById('reviewLinkBtn').style.display = 'none';
+            
+            const scanner = document.getElementById('ai-scanner');
+            const progress = document.getElementById('scanProgress');
+            const scanMsg = document.getElementById('scanMsg');
+            scanner.style.display = 'block';
+            progress.style.width = '0%';
+            progress.style.background = 'var(--gold)';
+            scanMsg.style.color = 'var(--gold)';
+            scanMsg.innerText = "جاري تهيئة محرك الذكاء الاصطناعي...";
+            
+            let w = 0;
+            const scanInterval = setInterval(() => {
+                w += Math.random() * 12; 
+                if (w > 100) w = 100;
+                progress.style.width = w + '%';
+                
+                if(w > 20 && w < 50) scanMsg.innerText = "جاري تحليل النصوص (OCR)...";
+                else if(w >= 50 && w < 85) scanMsg.innerText = "التحقق من بصمة جوجل ماب...";
+                
+                if(w >= 100) {
+                    clearInterval(scanInterval);
+                    if(file.size > 5000) {
+                        scanMsg.innerText = "✅ تم التحقق! تقييم أصلي.";
+                        scanMsg.style.color = "var(--success)";
+                        progress.style.background = "var(--success)";
+                        setTimeout(() => {
+                            document.getElementById('step1').style.display = 'none';
+                            document.getElementById('step2').style.display = 'block';
+                        }, 1200);
+                    } else {
+                        scanMsg.innerText = "❌ صورة غير صالحة! يرجى رفع التقاط شاشة حقيقي.";
+                        scanMsg.style.color = "var(--danger)";
+                        progress.style.background = "var(--danger)";
+                        setTimeout(() => {
+                            scanner.style.display = 'none';
+                            document.getElementById('uploadWrapper').style.display = 'inline-block';
+                            document.getElementById('reviewLinkBtn').style.display = 'block';
+                            input.value = ''; 
+                        }, 3000);
+                    }
+                }
+            }, 150);
+        }
+
         const menuData = {
             hotCoffee: [
                 { id: 'h1', name: 'إسبريسو', sizes: [{label: 'Single', price: 45}] },
@@ -471,49 +481,35 @@
             ]
         };
 
-        // دالة لإنشاء عناصر المنيو
         function renderMenuCategory(dataArray, containerId) {
             const container = document.getElementById(containerId);
             let html = '';
-            
             dataArray.forEach(item => {
                 let sizeOptions = '';
                 let defaultPrice = item.sizes[0].price;
-                
                 if(item.sizes.length > 1) {
                     sizeOptions = `<select id="size_${item.id}">`;
-                    item.sizes.forEach(size => {
-                        sizeOptions += `<option value="${size.price}" data-label="${size.label}">${size.label} - ${size.price} ج</option>`;
-                    });
+                    item.sizes.forEach(size => { sizeOptions += `<option value="${size.price}" data-label="${size.label}">${size.label} - ${size.price} ج</option>`; });
                     sizeOptions += `</select>`;
                 } else {
                     sizeOptions = `<span class="price" id="price_${item.id}">${defaultPrice} ج.م</span>`;
                 }
-
-                html += `
-                <div class="menu-item" data-id="${item.id}" data-name="${item.name}">
-                    <div class="details">
-                        <h5>${item.name}</h5>
-                        ${sizeOptions}
-                    </div>
+                html += `<div class="menu-item" data-id="${item.id}" data-name="${item.name}">
+                    <div class="details"><h5>${item.name}</h5>${sizeOptions}</div>
                     <div class="quantity-control">
                         <button onclick="updateQty('qty_${item.id}', -1)">-</button>
                         <input type="text" id="qty_${item.id}" value="0" readonly>
                         <button onclick="updateQty('qty_${item.id}', 1)">+</button>
-                    </div>
-                </div>`;
+                    </div></div>`;
             });
             container.innerHTML = html;
         }
 
-        // تشغيل الريندر عند فتح الصفحة
         renderMenuCategory(menuData.hotCoffee, 'hotCoffeeList');
         renderMenuCategory(menuData.icedCoffee, 'icedCoffeeList');
         renderMenuCategory(menuData.frappe, 'frappeList');
         renderMenuCategory(menuData.tea, 'teaList');
 
-
-        // التحكم في النوافذ المنبثقة
         function openSheet(id) {
             document.getElementById('overlay').classList.add('active');
             document.getElementById(id).classList.add('active');
@@ -524,7 +520,6 @@
             document.querySelectorAll('.bottom-sheet').forEach(sheet => sheet.classList.remove('active'));
         }
 
-        // التحكم في المنيو
         function updateQty(id, change) {
             let val = parseInt(document.getElementById(id).value) + change;
             if (val < 0) val = 0;
@@ -535,98 +530,83 @@
             const table = document.getElementById('menuTableNo').value;
             if (!table) return alert("برجاء إدخال رقم الترابيزة!");
             
-            let orderItems = [];
+            const allData = [...menuData.hotCoffee, ...menuData.icedCoffee, ...menuData.frappe, ...menuData.tea];
+            let orderItems = []; 
             let totalCost = 0;
-
+            
             document.querySelectorAll('.menu-item').forEach(itemEl => {
                 const id = itemEl.getAttribute('data-id');
                 const name = itemEl.getAttribute('data-name');
-                const qty = parseInt(document.getElementById(`qty_${id}`).value);
+                const qtyInput = document.getElementById(`qty_${id}`);
+                if(!qtyInput) return;
                 
+                const qty = parseInt(qtyInput.value);
                 if(qty > 0) {
-                    let price = 0;
+                    let price = 0; 
                     let sizeLabel = '';
-                    
                     const selectEl = document.getElementById(`size_${id}`);
-                    if(selectEl) {
-                        price = parseInt(selectEl.value);
-                        sizeLabel = ` (${selectEl.options[selectEl.selectedIndex].getAttribute('data-label')})`;
-                    } else {
-                        const allData = [...menuData.hotCoffee, ...menuData.icedCoffee, ...menuData.frappe, ...menuData.tea];
+                    
+                    if(selectEl) { 
+                        price = parseInt(selectEl.value); 
+                        sizeLabel = ` (${selectEl.options[selectEl.selectedIndex].getAttribute('data-label')})`; 
+                    } else { 
                         const foundItem = allData.find(i => i.id === id);
-                        price = foundItem.sizes[0].price;
+                        if(foundItem) price = foundItem.sizes[0].price;
                     }
                     
-                    const itemTotal = qty * price;
+                    const itemTotal = qty * price; 
                     totalCost += itemTotal;
                     orderItems.push(`${qty}x ${name}${sizeLabel} [${itemTotal} ج]`);
                 }
             });
-
+            
             if (orderItems.length === 0) return alert("اختر طلب أولاً!");
-
-            const msg = `*طلب جديد | طاولة ${table}*\n\n` + orderItems.join('\n') + `\n\n*الإجمالي التقريبي: ${totalCost} ج.م*`;
+            const msg = `*طلب جديد | طاولة ${table}*\n\n${orderItems.join('\n')}\n\n*الإجمالي التقريبي: ${totalCost} ج.م*`;
             window.open(`https://wa.me/${managerPhone}?text=${encodeURIComponent(msg)}`, '_blank');
             closeAllSheets();
         }
 
-        // --- نظام عجلة الحظ الاحترافي (Canvas) ---
         const canvas = document.getElementById("wheelCanvas");
         const ctx = canvas.getContext("2d");
-        const prizes = ["خصم 10%", "قهوة مجاني", "حلو اليوم", "واي فاي VIP", "خصم 20%", "مشروب إضافي"];
-        const colors = ["#111111", "#222222", "#f1c40f", "#111111", "#222222", "#f1c40f"];
-        const textColors = ["#f1c40f", "#f1c40f", "#000000", "#f1c40f", "#f1c40f", "#000000"];
+        const prizes = ["خصم 10%", "حظ أوفر", "قهوة مجاناً", "واي فاي VIP", "خصم 20%", "حظ أوفر"];
+        const colors = ["#1a1a1a", "#0a0a0a", "#1a1a1a", "#0a0a0a", "#1a1a1a", "#0a0a0a"];
+        const textColors = ["#f1c40f", "#888888", "#f1c40f", "#f1c40f", "#f1c40f", "#888888"]; 
         let finalPrize = "";
 
         function initWheel() {
-            const arc = Math.PI / (prizes.length / 2);
+            const arc = (Math.PI * 2) / prizes.length;
             ctx.clearRect(0, 0, 300, 300);
             for(let i = 0; i < prizes.length; i++) {
                 const angle = i * arc;
-                ctx.beginPath();
-                ctx.fillStyle = colors[i];
-                ctx.moveTo(150, 150);
-                ctx.arc(150, 150, 150, angle, angle + arc, false);
-                ctx.fill();
-                
-                ctx.save();
-                ctx.translate(150, 150);
-                ctx.rotate(angle + arc / 2);
-                ctx.textAlign = "right";
-                ctx.fillStyle = textColors[i];
-                ctx.font = "bold 20px Cairo";
-                ctx.fillText(prizes[i], 130, 6);
-                ctx.restore();
+                ctx.beginPath(); ctx.fillStyle = colors[i]; ctx.moveTo(150, 150); ctx.arc(150, 150, 150, angle, angle + arc, false); ctx.fill();
+                ctx.lineWidth = 1; ctx.strokeStyle = "rgba(241, 196, 15, 0.2)"; ctx.stroke();
+                ctx.save(); ctx.translate(150, 150); ctx.rotate(angle + arc / 2); ctx.textAlign = "right"; ctx.fillStyle = textColors[i]; ctx.font = "bold 16px Cairo"; ctx.fillText(prizes[i], 135, 6); ctx.restore();
             }
-        }
-
-        function enableSpin() {
-            document.getElementById('uploadText').innerHTML = '<i class="fa-solid fa-check" style="color:var(--gold)"></i> تم رفع الصورة بنجاح';
-            setTimeout(() => {
-                document.getElementById('step1').style.display = 'none';
-                document.getElementById('step2').style.display = 'block';
-            }, 800);
+            ctx.beginPath(); ctx.fillStyle = "#f1c40f"; ctx.arc(150, 150, 20, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.fillStyle = "#111"; ctx.arc(150, 150, 10, 0, Math.PI * 2); ctx.fill();
         }
 
         function spinWheel() {
             const btn = document.getElementById('spinBtn');
             btn.disabled = true;
-            
-            const randomDegree = Math.floor(Math.random() * 360) + (360 * 6);
+            const sliceAngle = 360 / prizes.length;
+            const targetIndex = Math.floor(Math.random() * prizes.length);
+            finalPrize = prizes[targetIndex];
+            const pointingAngle = (targetIndex * sliceAngle) + (sliceAngle / 2);
+            const actualDegree = (270 - pointingAngle + 360) % 360;
+            const randomDegree = actualDegree + (360 * 7);
             canvas.style.transform = `rotate(${randomDegree}deg)`;
 
             setTimeout(() => {
-                const actualDegree = randomDegree % 360;
-                let slice = 360 / prizes.length;
-                let prizeIndex = Math.floor((360 - actualDegree + (slice/2)) % 360 / slice);
-                
-                finalPrize = prizes[prizeIndex];
-                
                 const res = document.getElementById('prizeResult');
-                res.innerHTML = `🎉 مبروك! كسبت: <b>${finalPrize}</b>`;
+                const claimSec = document.getElementById('claimSection');
                 res.style.display = 'block';
-                document.getElementById('claimSection').style.display = 'block';
-            }, 4000);
+                if(finalPrize.includes("حظ أوفر")) {
+                    res.innerHTML = `😔 <b>حظ أوفر المرة القادمة!</b>`; claimSec.style.display = 'none'; res.style.color = "#888";
+                } else {
+                    res.innerHTML = `🎉 مبروك! كسبت: <b>${finalPrize}</b>`; claimSec.style.display = 'block'; res.style.color = "var(--gold)";
+                }
+            }, 5000); 
         }
 
         function sendPrizeToWA() {
